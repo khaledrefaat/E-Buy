@@ -26,6 +26,7 @@ const userSchema = new Schema({
       },
     ],
   },
+  admin: Boolean,
 });
 
 module.exports = model('User', userSchema);
