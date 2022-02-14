@@ -8,7 +8,7 @@ const {
   getProducts,
   getProduct,
   postProduct,
-  patchProduct,
+  patchEditProduct,
   deleteProduct,
 } = require('../controllers/admin-controllers');
 const Product = require('../models/product');
@@ -32,7 +32,7 @@ router.use(checkAdmin);
 router.get('/products', getProducts);
 
 router.get(
-  'products/:prodId',
+  '/products/:prodId',
   [param('prodId').custom(prodId => checkProduct(prodId))],
   getProduct
 );
@@ -75,7 +75,7 @@ router.patch(
       .trim()
       .isLength({ min: 10 }),
   ],
-  patchProduct
+  patchEditProduct
 );
 
 router.delete(

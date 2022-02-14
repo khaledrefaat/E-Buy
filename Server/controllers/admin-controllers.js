@@ -20,6 +20,17 @@ exports.getProduct = async (req, res, next) => {
   if (!validationErrors.isEmpty()) {
     return next(new HttpError(validationErrors.array()[0].msg, 422));
   }
+
+  const { prodId } = req.params;
+  try {
+    let product = await Product.findById(prodId);
+    return res.json(product);
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError('Something went wrong, please try again later.', 500)
+    );
+  }
 };
 
 exports.postProduct = async (req, res, next) => {
@@ -43,7 +54,7 @@ exports.postProduct = async (req, res, next) => {
   res.json(createdProduct);
 };
 
-exports.patchProduct = async (req, res, next) => {
+exports.patchEditProduct = async (req, res, next) => {
   const validationErrors = validationResult(req);
 
   if (!validationErrors.isEmpty()) {
