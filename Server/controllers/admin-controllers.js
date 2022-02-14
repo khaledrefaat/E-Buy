@@ -15,13 +15,17 @@ exports.getProducts = async (req, res, next) => {
   res.json(products);
 };
 
-exports.postProduct = async (req, res, next) => {
+exports.getProduct = async (req, res, next) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
     return next(new HttpError(validationErrors.array()[0].msg, 422));
   }
-  if (!req.userData.admin) {
-    return next(new HttpError('Authorization failed.', 401));
+};
+
+exports.postProduct = async (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return next(new HttpError(validationErrors.array()[0].msg, 422));
   }
 
   const { title, description, price, image } = req.body;
@@ -44,10 +48,6 @@ exports.patchProduct = async (req, res, next) => {
 
   if (!validationErrors.isEmpty()) {
     return next(new HttpError(validationErrors.array()[0].msg, 422));
-  }
-
-  if (!req.userData.admin) {
-    return next(new HttpError('Authorization failed.', 401));
   }
 
   const { prodId } = req.params;
@@ -77,9 +77,6 @@ exports.deleteProduct = async (req, res, next) => {
     return next(new HttpError(validationErrors.array()[0].msg, 422));
   }
 
-  if (!req.userData.admin) {
-    return next(new HttpError('Authorization failed.', 401));
-  }
   const { prodId } = req.params;
   try {
     await Product.findByIdAndDelete(prodId);
