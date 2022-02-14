@@ -5,12 +5,14 @@ const mongooseKey = require('./config/keys');
 
 const authRoutes = require('./routes/auth-routes');
 const adminRoutes = require('./routes/admin-routes');
+const shopRoutes = require('./routes/shop-routes');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/shop', shopRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.code || 500);

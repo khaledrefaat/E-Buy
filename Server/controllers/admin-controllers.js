@@ -3,16 +3,15 @@ const { validationResult } = require('express-validator');
 const HttpError = require('../models/http-error');
 
 exports.getProducts = async (req, res, next) => {
-  let products;
   try {
     products = await Product.find();
+    return res.json(products);
   } catch (err) {
     console.log(err);
     return next(
       new HttpError('Getting products failed, please try again later.', 500)
     );
   }
-  res.json(products);
 };
 
 exports.getProduct = async (req, res, next) => {

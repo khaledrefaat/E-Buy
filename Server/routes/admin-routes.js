@@ -18,7 +18,7 @@ const checkProduct = async prodId => {
   try {
     let product = await Product.findById(prodId);
     if (!product) {
-      Promise.reject("Couldn't find product with a associated id.");
+      return Promise.reject("Couldn't find product with a associated id.");
     }
   } catch (err) {
     console.log(err);
