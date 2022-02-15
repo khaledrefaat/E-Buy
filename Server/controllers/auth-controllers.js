@@ -22,14 +22,10 @@ exports.postLogin = async (req, res, next) => {
   }
 
   let token;
-
   try {
     token = jwt.sign(
       {
-        userId: existingUser._id,
-        email: existingUser.email,
-        username: existingUser.username,
-        admin: existingUser.admin,
+        user: existingUser,
       },
       '^rXP`D}:=?;(m&JYR3}j:fCgfp4LTe',
       { expiresIn: '7d' }
@@ -41,7 +37,7 @@ exports.postLogin = async (req, res, next) => {
     );
   }
 
-  res.json({ userId: existingUser, token });
+  res.json({ userId: existingUser._id, token });
 };
 
 exports.postSignUp = async (req, res, next) => {
@@ -51,9 +47,15 @@ exports.postSignUp = async (req, res, next) => {
     return next(new HttpError(validationErrors.array()[0].msg, 422));
   }
 
-  const { username, password, email, image } = req.body;
+  const { username, password, email, image, cart } = req.body;
 
-  let createdUser = new User({ username, password, email, image, cart: [] });
+  let createdUser = new User({
+    username,
+    password,
+    email,
+    image,
+    cart: cart || [],
+  });
 
   try {
     await createdUser.save();
@@ -66,9 +68,7 @@ exports.postSignUp = async (req, res, next) => {
   try {
     token = jwt.sign(
       {
-        userId: createdUser._id,
-        email: createdUser.email,
-        username: createdUser.username,
+        user: createdUser,
       },
       '^rXP`D}:=?;(m&JYR3}j:fCgfp4LTe',
       { expiresIn: '7d' }

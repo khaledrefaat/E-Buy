@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { body, param } = require('express-validator');
 
-const { getProducts, getProduct } = require('../controllers/shop-controllers');
+const {
+  getProducts,
+  getProduct,
+  getCart,
+} = require('../controllers/shop-controllers');
+const checkAuth = require('../middleware/check-auth');
 const Product = require('../models/product');
 
 router.get('/', getProducts);
@@ -20,5 +25,9 @@ router.get(
   ],
   getProduct
 );
+
+router.use(checkAuth);
+
+router.get('/cart', getCart);
 
 module.exports = router;

@@ -8,16 +8,8 @@ module.exports = async (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     if (!token) return next(new HttpError('Authorization failed.', 401));
 
-    const { userId, username, email, admin } = jwt.verify(
-      token,
-      '^rXP`D}:=?;(m&JYR3}j:fCgfp4LTe'
-    );
-    req.userData = {
-      userId,
-      username,
-      email,
-      admin,
-    };
+    const { user } = jwt.verify(token, '^rXP`D}:=?;(m&JYR3}j:fCgfp4LTe');
+    req.user = user;
     return next();
   } catch (err) {
     console.log(err);

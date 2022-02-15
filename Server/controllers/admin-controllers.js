@@ -5,7 +5,7 @@ const HttpError = require('../models/http-error');
 exports.getProducts = async (req, res, next) => {
   try {
     products = await Product.find();
-    return res.json(products);
+    return res.status(200).json(products);
   } catch (err) {
     console.log(err);
     return next(
@@ -23,7 +23,7 @@ exports.getProduct = async (req, res, next) => {
   const { prodId } = req.params;
   try {
     let product = await Product.findById(prodId);
-    return res.json(product);
+    return res.status(200).json(product);
   } catch (err) {
     console.log(err);
     return next(
@@ -50,7 +50,7 @@ exports.postProduct = async (req, res, next) => {
       new HttpError('Creating product failed, please try again later.', 500)
     );
   }
-  res.json(createdProduct);
+  res.status(201).json(createdProduct);
 };
 
 exports.patchEditProduct = async (req, res, next) => {
@@ -77,7 +77,7 @@ exports.patchEditProduct = async (req, res, next) => {
       new HttpError('Updating product failed, please try again later.', 500)
     );
   }
-  res.json(updatedProduct);
+  res.status(200).json(updatedProduct);
 };
 
 exports.deleteProduct = async (req, res, next) => {
@@ -90,11 +90,11 @@ exports.deleteProduct = async (req, res, next) => {
   const { prodId } = req.params;
   try {
     await Product.findByIdAndDelete(prodId);
+    res.status(204);
   } catch (err) {
     console.log(err);
     return next(
       new HttpError('Updating product failed, please try again later.', 500)
     );
   }
-  next();
 };

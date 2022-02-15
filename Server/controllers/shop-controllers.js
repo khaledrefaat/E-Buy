@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator');
 exports.getProducts = async (req, res, next) => {
   try {
     products = await Product.find();
-    return res.json(products);
+    return res.status(200).json(products);
   } catch (err) {
     console.log(err);
     return next(
@@ -22,7 +22,7 @@ exports.getProduct = async (req, res, next) => {
   const { prodId } = req.params;
   try {
     let product = await Product.findById(prodId);
-    return res.json(product);
+    return res.status(200).json(product);
   } catch (err) {
     console.log(err);
     return next(
@@ -30,3 +30,34 @@ exports.getProduct = async (req, res, next) => {
     );
   }
 };
+
+// cart
+// getting cart
+
+exports.getCart = (req, res, next) => {
+  const cart = req.user.cart;
+  res.status(200).json(cart);
+};
+
+// adding to cart
+
+exports.postCart = async (req, res, next) => {
+  const { productId } = req.body;
+  try {
+    req.user();
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError('Something went wrong, please try again later.', 500)
+    );
+  }
+};
+
+// delete product from cart
+
+// order
+// getting order
+
+// adding order
+
+// delete order

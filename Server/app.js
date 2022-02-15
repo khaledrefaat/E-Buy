@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/shop', shopRoutes);
+app.use('/api', shopRoutes);
 
 app.use((err, req, res, next) => {
   res.status(err.code || 500);
