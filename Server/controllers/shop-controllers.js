@@ -52,6 +52,11 @@ exports.getCart = async (req, res, next) => {
 // adding to cart
 
 exports.postCart = async (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return next(new HttpError(validationErrors.array()[0].msg, 422));
+  }
+
   const { productId } = req.body;
   try {
     const user = await User.findById(req.user.userId);
@@ -69,6 +74,11 @@ exports.postCart = async (req, res, next) => {
 // delete product from cart
 
 exports.deleteFromCart = async (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    return next(new HttpError(validationErrors.array()[0].msg, 422));
+  }
+
   const { productId } = req.params;
   const isDelete = req.body.remove;
 

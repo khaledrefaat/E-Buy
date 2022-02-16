@@ -66,8 +66,8 @@ userSchema.methods.removeFromCart = function (prodId) {
     const newQuantity = updatedCartItems[cartProductIndex].quantity - 1;
     updatedCartItems[cartProductIndex].quantity = newQuantity;
   } else {
-    updatedCartItems.filter(
-      cp => cp.productId.toString() === prodId.toString()
+    updatedCartItems = updatedCartItems.filter(
+      cp => cp.productId.toString() !== prodId.toString()
     );
   }
   this.cart.items = updatedCartItems;
@@ -76,7 +76,7 @@ userSchema.methods.removeFromCart = function (prodId) {
 
 userSchema.methods.removeProductFromCart = function (prodId) {
   const updatedCartItems = this.cart.items.filter(
-    cartItem => cartItem.productId.toString === prodId.toString()
+    cartItem => cartItem.productId.toString() !== prodId.toString()
   );
   this.cart.items = updatedCartItems;
   return this.save();
