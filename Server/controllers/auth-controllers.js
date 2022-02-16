@@ -25,7 +25,8 @@ exports.postLogin = async (req, res, next) => {
   try {
     token = jwt.sign(
       {
-        user: existingUser,
+        userId: existingUser._id,
+        admin: existingUser.admin,
       },
       '^rXP`D}:=?;(m&JYR3}j:fCgfp4LTe',
       { expiresIn: '7d' }
@@ -54,7 +55,7 @@ exports.postSignUp = async (req, res, next) => {
     password,
     email,
     image,
-    cart: cart || [],
+    cart: cart || { items: [] },
   });
 
   try {
@@ -68,7 +69,8 @@ exports.postSignUp = async (req, res, next) => {
   try {
     token = jwt.sign(
       {
-        user: createdUser,
+        userId: createdUser._id,
+        admin: createdUser.admin,
       },
       '^rXP`D}:=?;(m&JYR3}j:fCgfp4LTe',
       { expiresIn: '7d' }

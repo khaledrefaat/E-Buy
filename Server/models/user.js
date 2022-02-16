@@ -34,7 +34,7 @@ userSchema.methods.addToCart = function (productId) {
     cp => cp.productId.toString() === productId.toString()
   );
 
-  let newQuantity;
+  let newQuantity = 1;
   const updatedCartItems = [...this.cart.items];
 
   if (cartProductIndex >= 0) {
@@ -52,6 +52,38 @@ userSchema.methods.addToCart = function (productId) {
   };
 
   this.cart = updatedCart;
+  return this.save();
+};
+
+userSchema.methods.removeFromCart = function (prodId) {
+  const cartProductIndex = this.cart.items.findIndex(
+    cp => cp.productId.toString() === prodId.toString()
+  );
+
+  let updatedCartItems = [...this.cart.items];
+
+  if (this.cart.items[cartProductIndex].quantity > 1) {
+    const newQuantity = updatedCartItems[cartProductIndex].quantity - 1;
+    updatedCartItems[cartProductIndex].quantity = newQuantity;
+  } else {
+    updatedCartItems.filter(
+      cp => cp.productId.toString() === prodId.toString()
+    );
+  }
+  this.cart.items = updatedCartItems;
+  return this.save();
+};
+
+userSchema.methods.removeProductFromCart = function (prodId) {
+  const updatedCartItems = this.cart.items.filter(
+    cartItem => cartItem.productId.toString === prodId.toString()
+  );
+  this.cart.items = updatedCartItems;
+  return this.save();
+};
+
+userSchema.methods.clearCart = function () {
+  this.cart = { items: [] };
   return this.save();
 };
 

@@ -1,6 +1,9 @@
 const Product = require('../models/product');
 const { validationResult } = require('express-validator');
 
+const HttpError = require('../models/http-error');
+const User = require('../models/user');
+
 exports.getProducts = async (req, res, next) => {
   try {
     products = await Product.find();
@@ -34,9 +37,16 @@ exports.getProduct = async (req, res, next) => {
 // cart
 // getting cart
 
-exports.getCart = (req, res, next) => {
-  const cart = req.user.cart;
-  res.status(200).json(cart);
+exports.getCart = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    res.status(200).json(user.cart);
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError('Something went wrong, please try again later.', 500)
+    );
+  }
 };
 
 // adding to cart
@@ -44,7 +54,10 @@ exports.getCart = (req, res, next) => {
 exports.postCart = async (req, res, next) => {
   const { productId } = req.body;
   try {
-    req.user();
+    const user = await User.findById(req.user.userId);
+    await user.addToCart(productId);
+
+    res.status(201).json(user.cart);
   } catch (err) {
     console.log(err);
     return next(
@@ -54,6 +67,39 @@ exports.postCart = async (req, res, next) => {
 };
 
 // delete product from cart
+
+exports.deleteFromCart = async (req, res, next) => {
+  const { productId } = req.params;
+  const isDelete = req.body.remove;
+
+  try {
+    const user = await User.findById(req.user.userId);
+    if (isDelete) {
+      user.removeProductFromCart(productId);
+    } else {
+      await user.removeFromCart(productId);
+    }
+    res.status(200).json(user.cart);
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError('Something went wrong, please try again later.', 500)
+    );
+  }
+};
+
+exports.clearCart = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    await user.clearCart();
+    res.status(200).json(user.cart);
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError('Something went wrong, please try again later.', 500)
+    );
+  }
+};
 
 // order
 // getting order

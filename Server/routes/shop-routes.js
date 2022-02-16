@@ -6,6 +6,9 @@ const {
   getProducts,
   getProduct,
   getCart,
+  postCart,
+  deleteFromCart,
+  clearCart,
 } = require('../controllers/shop-controllers');
 const checkAuth = require('../middleware/check-auth');
 const Product = require('../models/product');
@@ -29,5 +32,11 @@ router.get(
 router.use(checkAuth);
 
 router.get('/cart', getCart);
+
+router.post('/cart', postCart);
+
+router.delete('/cart/:productId', deleteFromCart);
+
+router.delete('/cart', clearCart);
 
 module.exports = router;
