@@ -12,7 +12,11 @@ const {
   postCart,
   deleteFromCart,
   clearCart,
+  getOrder,
+  postOrder,
+  deleteOrder,
 } = require('../controllers/shop-controllers');
+const Order = require('../models/order');
 
 const checkProduct = async prodId => {
   try {
@@ -30,15 +34,7 @@ router.get('/', getProducts);
 
 router.get(
   '/product/:prodId',
-  [
-    param('prodId').custom(prodId => {
-      return Product.findById(prodId).then(prod => {
-        if (!prod) {
-          return Promise.reject("Couldn't find product with a associated id.");
-        }
-      });
-    }),
-  ],
+  [param('prodId').custom(prodId => checkProduct(prodId))],
   getProduct
 );
 
@@ -59,5 +55,23 @@ router.delete(
 );
 
 router.delete('/cart', clearCart);
+
+router.get('/order', getOrder);
+
+router.post('/order', postOrder);
+
+router.delete(
+  '/order/:orderId',
+  [
+    param('orderId').custom(value => {
+      return Order.findById(value).then(order => {
+        if (!order) {
+          return Promise.reject("Couldn't find order with associated id.");
+        }
+      });
+    }),
+  ],
+  deleteOrder
+);
 
 module.exports = router;
